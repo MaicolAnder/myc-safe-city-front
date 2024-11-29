@@ -73,7 +73,6 @@ export class IncidentMapComponent implements AfterViewInit, OnChanges {
     // Add new markers
     if (this.incidents) {
       this.incidents.forEach(incident => {
-        console.log(incident.location.lat, incident.location.lng);
         const marker = L.marker([incident.location.lat, incident.location.lng])
           .bindPopup(`
             <div>
@@ -83,6 +82,7 @@ export class IncidentMapComponent implements AfterViewInit, OnChanges {
             </div>
           `)
           .addTo(this.map);
+
         this.markers.push(marker);
           var circle = L.circle([incident.location.lat, incident.location.lng], {
             color: 'red',

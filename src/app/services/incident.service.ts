@@ -19,6 +19,10 @@ export class IncidentService {
     return this.incidents.asObservable();
   }
 
+  setIncidents(incidents: Incident[]): void {
+    this.incidents.next(incidents);
+  }
+  
   reportIncident(incident: Incident): void {
     const currentIncidents = this.incidents.getValue();
     this.incidents.next([...currentIncidents, { ...incident, id: Date.now().toString() }]);

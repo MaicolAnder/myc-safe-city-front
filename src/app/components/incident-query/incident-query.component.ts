@@ -53,6 +53,7 @@ export class IncidentQueryComponent implements OnInit {
       this.incidentService.getDBIncidents().subscribe(response => {
         this.incidents = response.data;
         this.filteredIncidents = this.incidents;
+        this.incidentService.setIncidents(this.incidents);
       });
     }
   }
@@ -77,14 +78,15 @@ export class IncidentQueryComponent implements OnInit {
 
   findNearbyIncidents() {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const nearby = this.incidentService.getNearbyIncidents(
-          position.coords.latitude,
-          position.coords.longitude
-        );
-        console.log('Nearby:', nearby);
-        this.filteredIncidents = nearby;
-      });
+      
+        navigator.geolocation.getCurrentPosition((position) => {
+          const nearby = this.incidentService.getNearbyIncidents(
+            position.coords.latitude,
+            position.coords.longitude
+          );
+          console.log('Nearby:', nearby);
+          this.filteredIncidents = nearby;
+        });
     }
   }
 }

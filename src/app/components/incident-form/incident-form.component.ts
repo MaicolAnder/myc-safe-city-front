@@ -96,7 +96,6 @@ export class IncidentFormComponent {
       this.description = '';
       this.location = null;
 
-      console.log('Submitted incident', incident);
       this.getCurrentLocation();
     }
   }
