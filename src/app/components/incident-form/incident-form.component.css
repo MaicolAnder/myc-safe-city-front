@@ -1,5 +1,5 @@
 .incident-form {
-  @apply bg-white rounded-lg shadow-md overflow-hidden p-6;
+  @apply bg-white rounded-lg shadow-md overflow-hidden p-4;
 }
 
 .title {

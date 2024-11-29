@@ -4,6 +4,9 @@
   <div class="form-content">
     <input type="text" class="form-input" placeholder="Nombre y apellido (Opcional)"  [(ngModel)]="nombreUsuario" />
     <input type="text" class="form-input" placeholder="Telefono de contacto"  [(ngModel)]="telefono" required="required"/>
+    
+
+    <label class="form-label">Seleccina el tipo de incidente</label>
     <div class="type-buttons">
       <app-button
         *ngFor="let type of incidentTypes"
@@ -16,7 +19,6 @@
 
     <div class="form-group">
       <div class="form-group">
-        <label class="form-label">Ubicación actual</label>
         <app-button
           variant="success"
           (onClick)="getCurrentLocation()"
@@ -24,8 +26,8 @@
         >
           Usar Ubicación Actual
         </app-button>
-        <p *ngIf="location" class="location-text">
-          Ubicación capturada: {{ location.lat }}, {{ location.lng }}
+        <p *ngIf="location" class="location-text aling-center">
+          Tus coordenadas son: {{ location.lat }}, {{ location.lng }}
         </p>
       </div>
 

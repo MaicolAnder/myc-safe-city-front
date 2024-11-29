@@ -42,6 +42,7 @@
               "src/favicon.ico",
               "src/media/marker-icon-2x.png",
               "src/media/marker-shadow.png",
+              "src/asstes/logo.png",
               "src/assets",
               {
                 "glob": "**/*",

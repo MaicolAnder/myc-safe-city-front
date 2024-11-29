@@ -27,6 +27,8 @@ import { Incident } from '../../models/incident.model';
         
         <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
           <app-incident-map [incidents]="filteredIncidents" />
+        </div>
+        <div class="scroll max-h-[50vh] overflow-y-auto pt-12">
           <app-incident-list [incidents]="filteredIncidents" />
         </div>
       </div>
@@ -56,16 +58,21 @@ export class IncidentQueryComponent implements OnInit {
   }
 
   applyFilters(filters: any) {
-    console.log('Filtrando incidentes...', filters);
-    console.log(this.incidents);
-    this.filteredIncidents = this.incidents.filter(incident => {
-      const typeMatch = !filters.type || incident.type === filters.type;
-      const dateMatch = !filters.dateRange || (
-        new Date(incident.timestamp) >= new Date(filters.dateRange.start) &&
-        new Date(incident.timestamp) <= new Date(filters.dateRange.end)
-      );
-      return typeMatch && dateMatch;
-    });
+    if(filters.type && filters.dateRange.start && filters.dateRange.end){
+      if(new Date(filters.dateRange.start) > new Date(filters.dateRange.end)){
+        alert('Valide las fechas');
+        filters.dateRange.start = null;
+        filters.dateRange.end   = null;
+      }
+      this.filteredIncidents = this.incidents.filter(incident => {
+        const typeMatch = !filters.type || incident.type === filters.type;
+        const dateMatch = !filters.dateRange || (
+          new Date(incident.timestamp) >= new Date(filters.dateRange.start) &&
+          new Date(incident.timestamp) <= new Date(filters.dateRange.end)
+        );
+        return typeMatch && dateMatch;
+      });
+    }
   }
 
   findNearbyIncidents() {

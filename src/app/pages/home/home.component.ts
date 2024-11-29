@@ -18,7 +18,7 @@ import { IncidentMapComponent } from '../../components/incident-map/incident-map
         </p>
       </header>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="grid grid-cols-2 gap-4">
         <app-incident-form />
         <app-incident-map />
       </div>

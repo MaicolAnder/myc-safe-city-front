@@ -84,6 +84,12 @@ export class IncidentMapComponent implements AfterViewInit, OnChanges {
           `)
           .addTo(this.map);
         this.markers.push(marker);
+          var circle = L.circle([incident.location.lat, incident.location.lng], {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: 500
+          }).addTo(this.map);
       });
     }
   }
