@@ -10,7 +10,7 @@
         [variant]="selectedType === type ? 'primary' : 'secondary'"
         (onClick)="selectType(type)"
       >
-        {{ type }}
+        {{ traslateIncidentTYPe(type) }}
       </app-button>
     </div>
 
@@ -29,7 +29,7 @@
         </p>
       </div>
 
-      <h2>O ingresa la direccióno tu mismo</h2>
+      <h2>O ingresa la dirección tu mismo</h2>
       <select (change)="onDepartamentoChange($event.target)" class="form-select" [(ngModel)]="selectedDepartamento">
         <option value="">-- Seleccione --</option>
         <option *ngFor="let departamento of departamentos" [value]="departamento">

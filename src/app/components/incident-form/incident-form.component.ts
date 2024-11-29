@@ -97,6 +97,20 @@ export class IncidentFormComponent {
       this.location = null;
 
       console.log('Submitted incident', incident);
+      this.getCurrentLocation();
+    }
+  }
+
+  traslateIncidentTYPe(type: string) {
+    switch (type) {
+      case 'ROBBERY':
+        return 'ROBO';
+      case 'VANDALISM':
+        return 'VANDALISMO';
+      case 'EMERGENCY':
+        return 'EMERGENCIA';
+      default:
+        return 'OTHER';
     }
   }
 }
