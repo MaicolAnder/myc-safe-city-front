@@ -19,6 +19,8 @@ export class IncidentFormComponent {
   description: string = '';
   location: { lat: number; lng: number } | null = null;
   
+  mensaje: string = '';
+
   departamentos: string[] = [];
   ciudades: string[] = [];
   data: { [key: string]: string[] } = {};
@@ -97,6 +99,10 @@ export class IncidentFormComponent {
       this.location = null;
 
       this.getCurrentLocation();
+      this.mensaje = 'Incidente reportado exitosamente';
+      setTimeout(() => {
+        this.mensaje = '';
+      }, 3000);
     }
   }
 
