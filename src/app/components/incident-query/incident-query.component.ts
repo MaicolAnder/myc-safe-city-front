@@ -25,7 +25,7 @@ import { Incident } from '../../models/incident.model';
           (nearbyRequested)="findNearbyIncidents()"
         />
         
-        <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="mt-6 grid grid-cols-1 lg:grid-cols-1 gap-6">
           <app-incident-map [incidents]="filteredIncidents" />
         </div>
         <div class="scroll max-h-[50vh] overflow-y-auto pt-12">
