@@ -1,0 +1,24 @@
+<div class="list-container">
+  <div class="incident-list">
+    <div *ngFor="let incident of incidents" class="incident-item">
+      <div class="incident-header">
+        <div>
+          <span [class]="getTypeClass(incident.type)" class="incident-type">
+            {{ incident.type }}
+          </span>
+          <p class="incident-timestamp">
+            {{ incident.timestamp | date:'medium' }}
+          </p>
+        </div>
+        <div class="incident-location">
+          <p class="location-text">
+            {{ incident.location.lat.toFixed(6) }}, {{ incident.location.lng.toFixed(6) }}
+          </p>
+        </div>
+      </div>
+      <p *ngIf="incident.description" class="incident-description">
+        {{ incident.description }}
+      </p>
+    </div>
+  </div>
+</div>

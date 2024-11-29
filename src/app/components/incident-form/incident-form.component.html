@@ -1,0 +1,74 @@
+<div class="incident-form">
+  <h2 class="title">Reportar Incidente</h2>
+  
+  <div class="form-content">
+    <input type="text" class="form-input" placeholder="Nombre y apellido (Opcional)"  [(ngModel)]="nombreUsuario" />
+    <input type="text" class="form-input" placeholder="Telefono de contacto"  [(ngModel)]="telefono" required="required"/>
+    <div class="type-buttons">
+      <app-button
+        *ngFor="let type of incidentTypes"
+        [variant]="selectedType === type ? 'primary' : 'secondary'"
+        (onClick)="selectType(type)"
+      >
+        {{ type }}
+      </app-button>
+    </div>
+
+    <div class="form-group">
+      <div class="form-group">
+        <label class="form-label">Ubicación actual</label>
+        <app-button
+          variant="success"
+          (onClick)="getCurrentLocation()"
+          [fullWidth]="true"
+        >
+          Usar Ubicación Actual
+        </app-button>
+        <p *ngIf="location" class="location-text">
+          Ubicación capturada: {{ location.lat }}, {{ location.lng }}
+        </p>
+      </div>
+
+      <h2>O ingresa la direccióno tu mismo</h2>
+      <select (change)="onDepartamentoChange($event.target)" class="form-select" [(ngModel)]="selectedDepartamento">
+        <option value="">-- Seleccione --</option>
+        <option *ngFor="let departamento of departamentos" [value]="departamento">
+          {{ departamento }}
+        </option>
+      </select>
+    
+      <div *ngIf="selectedDepartamento">
+        <h3>Ciudades de {{ selectedDepartamento }}</h3>
+        <select class="form-select" [(ngModel)]="selectedCiudad">
+          <option value="">-- Seleccione --</option>
+          @for (ciudad of ciudades; track $index) {
+            <option value="{{ ciudad }}">
+              {{ ciudad }}
+            </option>
+          }
+        </select>
+      </div>
+      <div *ngIf="selectedCiudad">
+        <input type="text" class="form-input" placeholder="Dirección"  [(ngModel)]="address"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Descripción</label>
+      <textarea
+        [(ngModel)]="description"
+        rows="3"
+        class="form-textarea"
+        placeholder="Describe el incidente..."
+      ></textarea>
+    </div>
+
+    <app-button
+      (onClick)="submitReport()"
+      [disabled]="!canSubmit"
+      [fullWidth]="true"
+    >
+      Enviar Reporte
+    </app-button>
+  </div>
+</div>

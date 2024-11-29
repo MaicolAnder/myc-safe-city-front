@@ -1,0 +1,35 @@
+.list-container {
+  @apply bg-white rounded-lg shadow-md overflow-hidden;
+}
+
+.incident-list {
+  @apply divide-y divide-gray-200;
+}
+
+.incident-item {
+  @apply py-4 first:pt-0 last:pb-0 px-6;
+}
+
+.incident-header {
+  @apply flex items-center justify-between;
+}
+
+.incident-type {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.incident-timestamp {
+  @apply mt-1 text-sm text-gray-500;
+}
+
+.incident-location {
+  @apply text-right;
+}
+
+.location-text {
+  @apply text-sm text-gray-500;
+}
+
+.incident-description {
+  @apply mt-2 text-sm text-gray-700;
+}

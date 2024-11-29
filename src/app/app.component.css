@@ -1,0 +1,19 @@
+.app-header {
+  @apply bg-white shadow;
+}
+
+.header-content {
+  @apply max-w-7xl mx-auto py-6 px-4;
+}
+
+.app-title {
+  @apply text-3xl font-bold text-gray-900;
+}
+
+.main-content {
+  @apply max-w-7xl mx-auto py-6 sm:px-6 lg:px-8;
+}
+
+.grid-layout {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+}

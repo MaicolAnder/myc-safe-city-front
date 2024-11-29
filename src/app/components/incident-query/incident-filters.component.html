@@ -1,0 +1,43 @@
+<div class="filters-container">
+  <div class="filters-grid">
+    <div class="filter-group">
+      <label class="filter-label">Tipo de Incidente</label>
+      <select
+        [(ngModel)]="filters.type"
+        (ngModelChange)="updateFilters()"
+        class="filter-select"
+      >
+        <option value="">Todos</option>
+        <option value="ROBBERY">Robo</option>
+        <option value="VANDALISM">Vandalismo</option>
+        <option value="EMERGENCY">Emergencia</option>
+      </select>
+    </div>
+    
+    <div class="filter-group">
+      <label class="filter-label">Rango de Fechas</label>
+      <div class="date-range">
+        <input
+          type="date"
+          [(ngModel)]="filters.dateRange.start"
+          (ngModelChange)="updateFilters()"
+          class="date-input"
+        />
+        <input
+          type="date"
+          [(ngModel)]="filters.dateRange.end"
+          (ngModelChange)="updateFilters()"
+          class="date-input"
+        />
+      </div>
+    </div>
+  </div>
+
+  <app-button
+    variant="primary"
+    (onClick)="findNearby()"
+    [fullWidth]="true"
+  >
+    Ver incidentes cercanos
+  </app-button>
+</div>

@@ -1,0 +1,26 @@
+.map-container {
+  position: sticky;
+  margin: 0rem;
+}
+
+:host ::ng-deep .leaflet-popup-content {
+  @apply p-2;
+}
+
+:host ::ng-deep .leaflet-popup-content h3 {
+  @apply font-bold text-lg mb-2;
+}
+
+:host ::ng-deep .leaflet-popup-content p {
+  @apply text-sm text-gray-600 mb-1;
+}
+
+.map {
+  height: 50vh;
+  width: 90vw;
+}
+
+.map-frame {
+  border: 2px solid #000;
+  height: 100%;
+}
