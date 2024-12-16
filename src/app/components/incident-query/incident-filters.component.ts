@@ -13,7 +13,7 @@ import { ButtonComponent } from '../shared/button.component';
 export class IncidentFiltersComponent {
   @Output() filtersChanged = new EventEmitter<any>();
   @Output() nearbyRequested = new EventEmitter<void>();
-  
+
   filters = {
     type: '',
     dateRange: {
@@ -23,7 +23,6 @@ export class IncidentFiltersComponent {
   };
 
   updateFilters() {
-    console.log('Filters updated:', this.filters);
     this.filtersChanged.emit(this.filters);
   }
 

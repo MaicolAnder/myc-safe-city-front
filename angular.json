@@ -14,13 +14,7 @@
               "extractLicenses": false,
               "namedChunks": true,
               "optimization": false,
-              "sourceMap": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.development.ts"
-                }
-              ]
+              "sourceMap": true
             },
             "production": {
               "aot": true,
@@ -28,27 +22,15 @@
               "namedChunks": false,
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.production.ts"
-                }
-              ]
+              "sourceMap": false
             }
           },
           "options": {
             "assets": [
-              "src/favicon.ico",
               "src/media/marker-icon-2x.png",
               "src/media/marker-shadow.png",
-              "src/asstes/logo.png",
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "./node_modules/leaflet/dist/images",
-                "output": "assets/"
-              }
+              "src/assets/logo.png",
+              "src/assets"
             ],
             "index": "src/index.html",
             "browser": "src/main.ts",

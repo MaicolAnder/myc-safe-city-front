@@ -1,6 +1,9 @@
 .map-container {
-  position: sticky;
-  margin: 0rem;
+  @apply h-[500px] w-full;
+}
+
+.map {
+  @apply h-full w-full;
 }
 
 :host ::ng-deep .leaflet-popup-content {
@@ -18,7 +21,7 @@
 .map {
   height: 60vh;
   width: 100vw;
-  max-width: 100%
+  max-width: 100%;
 }
 
 .map-frame {

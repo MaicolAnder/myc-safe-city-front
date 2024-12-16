@@ -20,12 +20,9 @@ export class IncidentMapComponent implements AfterViewInit, OnChanges {
 
   ngAfterViewInit() {
     this.initializeMap();
-    //if (!this.incidents) {
+    if (!this.incidents) {
       this.loadIncidents();
-    //}
-    //this.incidentService.getDBIncidents().subscribe(response => {
-    //  this.incidents = response.data;
-    //});
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -40,11 +37,6 @@ export class IncidentMapComponent implements AfterViewInit, OnChanges {
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
 
-    L.marker([0,0]).addTo(this.map)
-        .bindPopup('Tu ubicación')
-        .openPopup();
-
-
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
@@ -54,12 +46,8 @@ export class IncidentMapComponent implements AfterViewInit, OnChanges {
   }
 
   private loadIncidents() {
-    /*this.incidentService.getIncidents().subscribe(incidents => {
+    this.incidentService.getIncidents().subscribe(incidents => {
       this.incidents = incidents;
-      this.updateMarkers();
-    }); */
-    this.incidentService.getDBIncidents().subscribe(response => {
-      this.incidents = response.data;
       this.updateMarkers();
     });
   }
@@ -69,7 +57,6 @@ export class IncidentMapComponent implements AfterViewInit, OnChanges {
     this.markers.forEach(marker => marker.remove());
     this.markers = [];
 
-    console.log('Updating markers...', this.incidents);
     // Add new markers
     if (this.incidents) {
       this.incidents.forEach(incident => {
@@ -82,14 +69,15 @@ export class IncidentMapComponent implements AfterViewInit, OnChanges {
             </div>
           `)
           .addTo(this.map);
-
         this.markers.push(marker);
-          var circle = L.circle([incident.location.lat, incident.location.lng], {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 500
-          }).addTo(this.map);
+
+        const circle = L.circle([incident.location.lat, incident.location.lng], {
+          color: 'red',
+          fillColor: '#f03',
+          fillOpacity: 0.5,
+          radius: 500
+        }).addTo(this.map);
+        
       });
     }
   }

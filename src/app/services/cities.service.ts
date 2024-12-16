@@ -5,9 +5,9 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class CiudadesService {
+export class CitiesService {
 
-  private jsonURL = 'assets/js/ciudades_colombia.json';
+  private jsonURL = 'assets/js/colombia_cities.json';
 
   constructor(private http: HttpClient) { }
 

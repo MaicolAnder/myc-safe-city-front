@@ -6,7 +6,6 @@
         [(ngModel)]="filters.type"
         (ngModelChange)="updateFilters()"
         class="filter-select"
-        required="true"
       >
         <option value="">Todos</option>
         <option value="ROBBERY">Robo</option>
@@ -23,20 +22,17 @@
           [(ngModel)]="filters.dateRange.start"
           (ngModelChange)="updateFilters()"
           class="date-input"
-          required="true"
         />
         <input
           type="date"
           [(ngModel)]="filters.dateRange.end"
           (ngModelChange)="updateFilters()"
           class="date-input"
-          required="true"
         />
       </div>
     </div>
   </div>
-  <br>
-  <br>
+
   <app-button
     variant="primary"
     (onClick)="findNearby()"

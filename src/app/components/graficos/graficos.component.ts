@@ -1,87 +1,133 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Chart, ChartType } from 'chart.js/auto';
 import { IncidentService } from '../../services/incident.service';
 import { Incident } from '../../models/incident.model';
-import { response } from 'express';
 import { ChartJsUtils } from '../../utils/ChartJsUtils';
-
 
 @Component({
   selector: 'app-graficos',
   standalone: true,
   imports: [],
-  templateUrl: './graficos.component.html',
-  styleUrl: './graficos.component.css'
+  template: `
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-8">Análisis de Incidentes</h1>
+      
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Distribución por Tipo de Incidente</h2>
+        <div class="relative" style="height: 400px;">
+          <canvas #chartCanvas></canvas>
+        </div>
+      </div>
+    </div>
+  `,
+  styles: [`
+    :host {
+      display: block;
+      width: 100%;
+    }
+  `]
 })
-export class GraficosComponent implements OnInit {
-
-  private indicendts: Incident[] = [];
+export class GraficosComponent implements OnInit, AfterViewInit, OnDestroy {
+  private incidents: Incident[] = [];
   private utils: ChartJsUtils;
+  private chart: Chart | null = null;
 
-  public chartDoughnut: any = null;
-
-  constructor(
-    private incidentService: IncidentService
-  ){
+  constructor(private incidentService: IncidentService) {
     this.utils = new ChartJsUtils();
-    this.getIncidents()
   }
 
   ngOnInit(): void {
+    this.loadIncidents();
   }
 
-  setGraphicDoungnot(){
-    console.log('Hola mundo')
-    let tiposIncidentes = this.indicendts.map(incident => incident.type);
+  ngAfterViewInit(): void {
+    // Wait for the next tick to ensure the canvas is ready
+    setTimeout(() => {
+      this.initializeChart();
+    }, 0);
+  }
 
-    const contador =this.countOccurrences(tiposIncidentes);
-    console.log(Object.keys(contador))
-    const data = {
-      labels: Object.keys(contador),
-      datasets: [
-        {
-          label: 'Dataset 1',
-          data: Object.values(contador),
-          backgroundColor: [
-            this.utils.transparentize(this.utils.CHART_COLORS.red, 0.5),
-            this.utils.transparentize(this.utils.CHART_COLORS.orange, 0.5),
-            this.utils.transparentize(this.utils.CHART_COLORS.yellow, 0.5),
-            this.utils.transparentize(this.utils.CHART_COLORS.green, 0.5),
-            this.utils.transparentize(this.utils.CHART_COLORS.blue, 0.5),
-          ]
-        }
-      ]
-    };
-    // Creamos la gráfica
-    this.chartDoughnut = new Chart(
-      'chart',
-      {
+  ngOnDestroy(): void {
+    if (this.chart) {
+      this.chart.destroy();
+    }
+  }
+
+  private loadIncidents(): void {
+    this.incidentService.getIncidents().subscribe({
+      next: (incidents) => {
+        this.incidents = incidents;
+        this.updateChartData();
+      },
+      error: (error) => {
+        console.error('Error loading incidents:', error);
+      }
+    });
+  }
+
+  private initializeChart(): void {
+    const canvas = document.querySelector('canvas');
+    if (!canvas) {
+      console.error('Canvas element not found');
+      return;
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.error('Could not get canvas context');
+      return;
+    }
+
+    try {
+      this.chart = new Chart(ctx, {
         type: 'doughnut',
-        data: data,
+        data: {
+          labels: [],
+          datasets: [{
+            data: [],
+            backgroundColor: [
+              this.utils.transparentize(this.utils.CHART_COLORS.red, 0.5),
+              this.utils.transparentize(this.utils.CHART_COLORS.blue, 0.5),
+              this.utils.transparentize(this.utils.CHART_COLORS.green, 0.5),
+            ],
+          }]
+        },
         options: {
-          scales: {
-            y: {
-              beginAtZero: true
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+            },
+            title: {
+              display: true,
+              text: 'Distribución de Incidentes'
             }
           }
         }
       });
+
+      this.updateChartData();
+    } catch (error) {
+      console.error('Error creating chart:', error);
+    }
   }
 
-  getIncidents(){
-    this.incidentService.getDBIncidents().subscribe(
-      response => {
-        this.indicendts = response.data;
-        this.setGraphicDoungnot()
-      }
-    )
+  private updateChartData(): void {
+    if (!this.chart || !this.incidents.length) return;
+
+    const incidentTypes = this.incidents.map(incident => incident.type);
+    const typeCounts = this.countOccurrences(incidentTypes);
+
+    this.chart.data.labels = Object.keys(typeCounts);
+    this.chart.data.datasets[0].data = Object.values(typeCounts);
+    this.chart.update();
   }
 
-  countOccurrences(typeIncident: string[]): { [key: string]: number } {
-    return typeIncident.reduce((acc: any, type: string) => {
-      acc[type] = (acc[type] || 0) + 1; // Incrementa el contador si existe, si no, lo inicializa en 1
+  private countOccurrences(types: string[]): { [key: string]: number } {
+    return types.reduce((acc: { [key: string]: number }, type: string) => {
+      acc[type] = (acc[type] || 0) + 1;
       return acc;
-    }, {}); // El objeto vacío es el acumulador inicial
+    }, {});
   }
-  
 }

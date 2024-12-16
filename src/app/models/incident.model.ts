@@ -10,9 +10,8 @@ export interface Incident {
   mediaUrl?: string;
   timestamp: Date;
   city?: string;
-  neighborhood?: string;
   department?: string;
   address?: string;
-  nombreUsuario: string;
+  nombreUsuario?: string;
   telefono?: string;
 }

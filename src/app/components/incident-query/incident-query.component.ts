@@ -15,7 +15,7 @@ import { Incident } from '../../models/incident.model';
     FormsModule,
     IncidentMapComponent,
     IncidentListComponent,
-    IncidentFiltersComponent
+    IncidentFiltersComponent,
   ],
   template: `
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
@@ -25,68 +25,62 @@ import { Incident } from '../../models/incident.model';
           (nearbyRequested)="findNearbyIncidents()"
         />
         
-        <div class="mt-6 grid grid-cols-1 lg:grid-cols-1 gap-6">
+        <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
           <app-incident-map [incidents]="filteredIncidents" />
-        </div>
-        <div class="scroll max-h-[50vh] overflow-y-auto pt-12">
           <app-incident-list [incidents]="filteredIncidents" />
         </div>
       </div>
     </div>
-  `
+  `,
 })
 export class IncidentQueryComponent implements OnInit {
   incidents: Incident[] = [];
   filteredIncidents: Incident[] = [];
+  isLoading = false;
+  error: string | null = null;
 
   constructor(private incidentService: IncidentService) {}
 
   ngOnInit() {
-    console.log('Buscador de incidentes',  this.incidents );
-    this.incidentService.getIncidents().subscribe(incidents => {
-      this.incidents = incidents;
-      this.filteredIncidents = incidents;
-    });
+    this.loadIncidents();
+  }
 
-    if (this.incidents.length === 0) {
-      console.log('Cargando incidentes desde la base de datos...');
-      this.incidentService.getDBIncidents().subscribe(response => {
-        this.incidents = response.data;
-        this.filteredIncidents = this.incidents;
-        this.incidentService.setIncidents(this.incidents);
-      });
-    }
+  private loadIncidents() {
+    this.isLoading = true;
+    this.incidentService.getIncidents().subscribe({
+      next: (incidents) => {
+        this.incidents = incidents;
+        this.filteredIncidents = incidents;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.error = 'Error loading incidents';
+        this.isLoading = false;
+        console.error('Error loading incidents:', error);
+      },
+    });
   }
 
   applyFilters(filters: any) {
-    if(filters.type && filters.dateRange.start && filters.dateRange.end){
-      if(new Date(filters.dateRange.start) > new Date(filters.dateRange.end)){
-        alert('Valide las fechas');
-        filters.dateRange.start = null;
-        filters.dateRange.end   = null;
-      }
-      this.filteredIncidents = this.incidents.filter(incident => {
-        const typeMatch = !filters.type || incident.type === filters.type;
-        const dateMatch = !filters.dateRange || (
-          new Date(incident.timestamp) >= new Date(filters.dateRange.start) &&
-          new Date(incident.timestamp) <= new Date(filters.dateRange.end)
-        );
-        return typeMatch && dateMatch;
-      });
-    }
+    this.filteredIncidents = this.incidents.filter((incident) => {
+      const typeMatch = !filters.type || incident.type === filters.type;
+      const dateMatch =
+        !filters.dateRange ||
+        (new Date(incident.timestamp) >= new Date(filters.dateRange.start) &&
+          new Date(incident.timestamp) <= new Date(filters.dateRange.end));
+      return typeMatch && dateMatch;
+    });
   }
 
   findNearbyIncidents() {
     if (navigator.geolocation) {
-      
-        navigator.geolocation.getCurrentPosition((position) => {
-          const nearby = this.incidentService.getNearbyIncidents(
-            position.coords.latitude,
-            position.coords.longitude
-          );
-          console.log('Nearby:', nearby);
-          this.filteredIncidents = nearby;
-        });
+      navigator.geolocation.getCurrentPosition((position) => {
+        const nearby = this.incidentService.getNearbyIncidents(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+        this.filteredIncidents = nearby;
+      });
     }
   }
 }

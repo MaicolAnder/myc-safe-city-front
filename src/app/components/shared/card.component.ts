@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -6,11 +6,22 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-      <div class="p-6">
+    <div [class]="getCardClasses()">
+      <div [class]="getPaddingClasses()">
         <ng-content></ng-content>
       </div>
     </div>
   `
 })
-export class CardComponent {}
+export class CardComponent {
+  @Input() noPadding = false;
+  @Input() hover = true;
+
+  getCardClasses(): string {
+    return `card ${this.hover ? 'hover:shadow-lg' : ''}`;
+  }
+
+  getPaddingClasses(): string {
+    return this.noPadding ? '' : 'p-6';
+  }
+}

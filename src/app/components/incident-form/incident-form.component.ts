@@ -1,55 +1,56 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '../shared/button.component';
 import { IncidentService } from '../../services/incident.service';
-import { CiudadesService } from '../../services/ciudades.service';
-import { Incident } from '../../models/incident.model';
+import { CitiesService } from '../../services/cities.service';
 
 @Component({
   selector: 'app-incident-form',
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonComponent],
   templateUrl: './incident-form.component.html',
-  styleUrls: ['./incident-form.component.css']
+  styleUrls: ['./incident-form.component.css'],
 })
-export class IncidentFormComponent {
+export class IncidentFormComponent implements OnInit {
   incidentTypes = ['ROBBERY', 'VANDALISM', 'EMERGENCY'];
   selectedType: string | null = null;
   description: string = '';
   location: { lat: number; lng: number } | null = null;
-  
-  mensaje: string = '';
-
-  departamentos: string[] = [];
-  ciudades: string[] = [];
-  data: { [key: string]: string[] } = {};
-
-  neighborhood : string = ''
-  ciudad : string = ''
-  address: string = ''
-  selectedDepartamento: string = '';
-  selectedCiudad: string = '';
+  departments: string[] = [];
+  cities: string[] = [];
+  selectedDepartment: string = '';
+  city: string = '';
+  address: string = '';
   nombreUsuario: string = '';
   telefono: string = '';
+  isSubmitting = false;
 
   constructor(
     private incidentService: IncidentService,
-    private ciudadesService: CiudadesService
-  ) {
-    this.ciudadesService.getDepartamentos().subscribe(data => {
-      this.data = data;
-      this.departamentos = Object.keys(data);
-    });
-    setTimeout(() => {
-      this.getCurrentLocation();
-    }, 3000);
+    private citiesService: CitiesService
+  ) {}
+
+  ngOnInit() {
+    this.loadDepartments();
+    this.getCurrentLocation();
   }
 
-  onDepartamentoChange(departamento: any): void {
-    this.selectedDepartamento = departamento.value;
-    this.ciudades = this.data[this.selectedDepartamento];
-    console.log(this.data[departamento], this.ciudades);
+  loadDepartments() {
+    this.citiesService.getDepartamentos().subscribe((departments) => {
+      this.departments = Object.keys(departments);
+    });
+  }
+
+  onDepartamentoChange(department: string) {
+    if (department) {
+      this.citiesService.getDepartamentos().subscribe((data) => {
+        this.cities = data[department] || [];
+      });
+    } else {
+      this.cities = [];
+      this.city = '';
+    }
   }
 
   selectType(type: string) {
@@ -60,10 +61,9 @@ export class IncidentFormComponent {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          console.log(position);
           this.location = {
             lat: position.coords.latitude,
-            lng: position.coords.longitude
+            lng: position.coords.longitude,
           };
         },
         (error) => {
@@ -74,48 +74,49 @@ export class IncidentFormComponent {
   }
 
   get canSubmit(): boolean {
-    return !!this.selectedType && !!this.location;
+    return !!this.selectedType && !!this.location && !this.isSubmitting;
   }
 
   submitReport() {
     if (this.canSubmit && this.location) {
-      let incident: Incident = {
-        nombreUsuario: this.nombreUsuario,
-        telefono: this.telefono,
+      this.isSubmitting = true;
+
+      const incident = {
         type: this.selectedType as 'ROBBERY' | 'VANDALISM' | 'EMERGENCY',
         location: this.location,
         description: this.description,
         timestamp: new Date(),
-        city: this.selectedCiudad,
-        neighborhood: this.neighborhood,
-        department: this.selectedDepartamento,
-        address: this.address
-      }
-      this.incidentService.reportIncident(incident);
-      this.incidentService.saveIncident(incident);
-      
-      this.selectedType = null;
-      this.description = '';
-      this.location = null;
+        department: this.selectedDepartment,
+        city: this.city,
+        address: this.address,
+        nombreUsuario: this.nombreUsuario,
+        telefono: this.telefono,
+      };
 
-      this.getCurrentLocation();
-      this.mensaje = 'Incidente reportado exitosamente';
-      setTimeout(() => {
-        this.mensaje = '';
-      }, 3000);
+      this.incidentService.reportIncident(incident).subscribe({
+        next: () => {
+          this.resetForm();
+          // Here you could add a success notification
+        },
+        error: (error) => {
+          console.error('Error submitting incident:', error);
+          // Here you could add an error notification
+        },
+        complete: () => {
+          this.isSubmitting = false;
+        },
+      });
     }
   }
 
-  traslateIncidentTYPe(type: string) {
-    switch (type) {
-      case 'ROBBERY':
-        return 'ROBO';
-      case 'VANDALISM':
-        return 'VANDALISMO';
-      case 'EMERGENCY':
-        return 'EMERGENCIA';
-      default:
-        return 'OTHER';
-    }
+  private resetForm() {
+    this.selectedType = null;
+    this.description = '';
+    this.location = null;
+    this.selectedDepartment = '';
+    this.city = '';
+    this.address = '';
+    this.nombreUsuario = '';
+    this.telefono = '';
   }
 }
